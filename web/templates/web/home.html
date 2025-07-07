@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold">Bienvenido a AutoBlog</h1>
+    <p class="lead">El espacio donde los amantes de los autos encuentran noticias, novedades y las mejores imágenes.</p>
+    <a href="{% url 'registro' %}" class="btn btn-outline-dark mt-3">Registrate ahora</a>
+  </div>
+
+  <!-- Sección destacada -->
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <div class="card border-dark h-100 hover-card">
+        <div class="card-body">
+          <h5 class="card-title">Últimas Noticias</h5>
+          <p class="card-text">Mantente informado con lo último del mundo automotor.</p>
+          <a href="{% url 'noticias' %}" class="btn btn-outline-dark">Ver noticias</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card border-dark h-100 hover-card">
+        <div class="card-body">
+          <h5 class="card-title">Galería de Fotos</h5>
+          <p class="card-text">Explora imágenes únicas de autos clásicos, deportivos y modernos.</p>
+          <a href="{% url 'galeria' %}" class="btn btn-outline-dark">Ver galería</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card border-dark h-100 hover-card">
+        <div class="card-body">
+          <h5 class="card-title">Contáctanos</h5>
+          <p class="card-text">¿Tienes alguna consulta o propuesta? ¡Estamos para ayudarte!</p>
+          <a href="{% url 'contacto' %}" class="btn btn-outline-dark">Ir a contacto</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

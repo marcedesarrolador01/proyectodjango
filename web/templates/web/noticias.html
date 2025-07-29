@@ -1,5 +1,109 @@
 {% extends 'base.html' %}
-{% block title %}noticias{% endblock %}
+{% load static %}
+{% block title %}Noticias | AutoBlog {% endblock %}
 {% block content %}
-<p>Hola, soy noticias</p>
-{% endblock %}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Bienvenido a AutoBlog</h1>
+
+        <!-- Filtro -->
+        <form method="get" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="q" placeholder="Buscar por título o autor..." class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <select name="categoria" class="form-select">
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categorias %}
+                        <option value="{{ cat.slug }}">{{ cat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="orden" class="form-select">
+                        <option value="">Más recientes</option>
+                        <option value="comentarios">Más comentados</option>
+                        <option value="likes">Más gustados</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark w-100">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            {% for post in page_obj %}
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card h-100 border-dark w-100">
+                    {% if post.imagen %}
+                    <img src="{{ post.imagen.url }}" class="card-img-top home-card" alt="{{ post.titulo }}">
+                    {% else %}
+                    <img src="{% static 'img/placeholder.png' %}" class="card-img-top home-card" alt="Sin imagen">
+                    {% endif %}
+                    <div class="card-body home-card">
+                        <h5 class="card-title home-card">{{ post.titulo }}</h5>
+                        <p class="card-text home-card">{{ post.contenido|truncatechars:100 }}</p>
+                    </div>
+                    <div class="card-footer text-muted home-card">
+                        <small>
+                            Por {{ post.autor.username }} |
+                            {{ post.fecha_creacion|date:"d/m/Y" }} <br>
+                            {{ post.total_comentarios }} comentarios |
+                            {{ post.total_likes }} likes
+                        </small>
+                        <a href="{% url 'detalle_post' post.slug %}"
+                            class="btn btn-sm btn-outline-dark float-end mt-2">Leer más</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No se encontraron publicaciones.</p>
+            {% endfor %}
+        </div>
+
+
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center mt-4">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="btn btn-sm btn-outline-dark mt-2"
+                        href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
+                        aria-label="Anterior">
+                        &laquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="btn btn-sm btn-outline-secondary mt-2">&laquo;</span>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="btn btn-sm btn-outline-dark mt-2 {% if page_obj.number == num %}active{% endif %}"
+                        href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="btn btn-sm btn-outline-dark mt-2"
+                        href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
+                        aria-label="Siguiente">
+                        &raquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="btn btn-sm btn-outline-secondary mt-2">&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        {% endblock %}

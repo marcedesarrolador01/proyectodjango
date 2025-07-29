@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Eliminar-Post | AutoBlog {% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">¿Estás seguro?</h4>
+        <p>Vas a eliminar el post <strong>"{{ post.titulo }}"</strong>. Esta acción no se puede deshacer.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-outline-red">Sí, eliminar</button>
+        <a href="{% url 'detalle_post' slug=post.slug %}" class="btn btn-sm btn-outline-dark">Cancelar</a>
+
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Editar-Post | AutoBlog {% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Editar publicación</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+
+        <!-- Botón verde -->
+        <button class="btn btn-sm btn-outline-green">Guardar canbios</button>
+
+        <!-- Botón rojo -->
+        <button class="btn btn-sm btn-outline-dark">Cancelar</button>
+
+    </form>
+</div>
+{% endblock %}

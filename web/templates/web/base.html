@@ -1,85 +1,105 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Mi Blog{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <!-- icono -->
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-custom">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="{% url 'home' %}">Mi Blog</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Navbar -->
+    <!-- Reemplaza solo el contenido del navbar dentro de base.html -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">AutoBlog</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'noticias' %}">Noticias</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'galeria' %}">Galería</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contacto' %}">Contacto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a></li>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Inicio</a>
-                </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-user-circle me-1"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="POST" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button class="dropdown-item" type="submit">Cerrar sesión</button>
+                                </form>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        Categorías
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Deportivos</a></li>
-                        <li><a class="dropdown-item" href="#">SUV</a></li>
-                        <li><a class="dropdown-item" href="#">Eléctricos</a></li>
-                        <li><a class="dropdown-item" href="#">Camionetas</a></li>
-                        <li><a class="dropdown-item" href="#">Clásicos</a></li>
-                    </ul>
-                </li>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if user.perfilusuario.puede_publicar %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'crear_post' %}"> Crear Post</a></li>
+                    {% endif %}
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'galeria' %}">Galería</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'contacto' %}">Contacto</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'registro' %}">Registro</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                </li>
-            </ul>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
+
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<!-- Contenido -->
-<main class="container mt-4">
-    {% block content %}
-    {% endblock %}
-</main>
-
-<!-- Footer -->
-<footer class="text-center">
-    <div class="container">
-        <p class="mb-2">© 2025 Mi Blog - Todos los derechos reservados</p>
-        <div>
-            <a href="{% url 'contacto' %}">Contacto</a>
-            <a href="{% url 'registro' %}">Registro</a>
-            <a href="{% url 'login' %}">Acceso</a>
+    <!-- Contenido -->
+    <main class="container mt-4">
+        <!-- Mensajes flash -->
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+            {% endfor %}
         </div>
-        <p class="detalle">Desarrollado por el equipo de BlogAutos | Inspirado en Bootstrap</p>
-    </div>
-</footer>
+        {% endif %}
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-2">© 2025 Mi Blog - Todos los derechos reservados</p>
+            <div>
+                <a href="{% url 'contacto' %}">Contacto</a>
+                <a href="{% url 'registro' %}">Registro</a>
+                <a href="{% url 'login' %}">Acceso</a>
+            </div>
+            <p class="detalle">Desarrollado por el equipo de BlogAutos | Inspirado en Bootstrap</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

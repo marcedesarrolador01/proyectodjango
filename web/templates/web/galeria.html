@@ -1,5 +1,106 @@
-{% extends 'base.html' %}
-{% block title %}galeria{% endblock %}
+{% extends "base.html" %}
+{% block title %}Galería | AutoBlog {% endblock %}
 {% block content %}
-<p>Hola, soy galeria</p>
+
+<h2 class="mt-3">Galería de Imágenes</h2>
+<!-- Filtrado de busqueda por titulo y categoria -->
+<form method="get" class="mb-4">
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input type="text" name="q" placeholder="Buscar por título">
+    </div>
+    <div class="col-md-3">
+      <select name="categoria" class="form-select">
+        <option value="">Todas las categorías</option>
+        {% for cat in categorias %}
+        <option value="{{ cat.slug }}">{{ cat.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-dark w-100">Filtrar</button>
+    </div>
+  </div>
+</form>
+<!-- Tarjetas de imagenes -->
+<div class="row">
+  {% for imagen in imagenes %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <!-- Aquí agregamos los atributos para abrir el modal y onclick para pasar la URL -->
+      <img src="{{ imagen.imagen.url }}" class="card-img-top cursor-pointer" alt="{{ imagen.titulo }}"
+        data-bs-toggle="modal" data-bs-target="#modalImagen" onclick="expandirImagen(this.src)">
+      <div class="card-body">
+        <h5 class="card-title">{{ imagen.titulo }}</h5>
+        <p class="text-muted">
+          <small>{{ imagen.categoria.nombre }} - {{ imagen.fecha_creacion|date:"d M Y" }}</small>
+        </p>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p>No se encontraron imágenes.</p>
+  {% endfor %}
+</div>
+<!-- Modal para expandir imagen -->
+<div class="modal fade" id="modalImagen" tabindex="-1" aria-labelledby="modalImagenLabel" aria-hidden="true">
+  <button type="button" class="custom-x-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal"
+    aria-label="Cerrar">×</button>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content position-relative">
+      <div class="modal-body p-0">
+        <img src="" id="imagenExpandida" class="img-fluid w-100" alt="Imagen expandida">
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- Paginación de 9 imagenes -->
+<nav aria-label="Paginación">
+  <ul class="pagination justify-content-center mt-4">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="btn btn-sm btn-outline-dark mt-2"
+        href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
+        aria-label="Anterior">
+        &laquo;
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="btn btn-sm btn-outline-secondary mt-2">&laquo;</span>
+    </li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+      <a class="btn btn-sm btn-outline-dark mt-2 {% if page_obj.number == num %}active{% endif %}"
+        href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}">
+        {{ num }}
+      </a>
+    </li>
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="btn btn-sm btn-outline-dark mt-2"
+        href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
+        aria-label="Siguiente">
+        &raquo;
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="btn btn-sm btn-outline-secondary mt-2">&raquo;</span>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+<!-- Script para actualizar la imagen dentro del modal -->
+<script>
+  function expandirImagen(url) {
+    document.getElementById('imagenExpandida').src = url;
+  }
+</script>
+
 {% endblock %}

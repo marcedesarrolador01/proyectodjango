@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Detalle-Post | AutoBlog {% endblock %}
+{% block content %}
+<!-- detalle del post  -->
+<div class="container mt-4">
+    <div class="card mb-4 border-dark shadow">
+        {% if post.imagen %}
+        <div class="bg-light p-3 rounded overflow-hidden">
+            <img src="{{ post.imagen.url }}" class="w-100 rounded" alt="{{ post.titulo }}"
+                style="height: 500px; object-fit: cover;">
+        </div>
+
+        {% endif %}
+        <div class="card-body">
+            <h2 class="card-title">{{ post.titulo }}</h2>
+            <p class="post-detalle-text">{{ post.contenido }}</p>
+            <p class="text-muted">
+                Publicado por <strong>{{ post.autor.username }}</strong> |
+                {{ post.fecha_creacion|date:"d/m/Y" }} |
+                Categoría: {{ post.categoria.nombre }}
+            </p>
+            <p>
+                <strong>{{ post.total_likes }} Me gusta</strong> |
+                <strong>{{ comentarios.count }} Comentarios</strong>
+            </p>
+            {% if request.user == post.autor or request.user.is_superuser %}
+            <a href="{% url 'editar_post' slug=post.slug %}" class="btn btn-sm btn-outline-green">Editar</a>
+            <a href="{% url 'eliminar_post' slug=post.slug %}" class="btn btn-sm btn-outline-red">Eliminar</a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            {% if ya_dio_like %}
+            <form action="{% url 'quitar_like' post.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-secondary">Quitar Like</button>
+            </form>
+            {% else %}
+            <form action="{% url 'dar_like' post.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-dark">Me gusta</button>
+            </form>
+            {% endif %}
+            {% else %}
+            <p class="text-muted">Inicia sesión para dar Me gusta.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h4>Comentarios</h4>
+    {% for comentario in comentarios %}
+    <div class="border rounded p-2 mb-2 bg-white">
+        <p>{{ comentario.contenido }}</p>
+        <p class="small" style="color: #ff0310">Por {{ comentario.usuario }} el {{ comentario.fecha_creacion|date:"d/m/Y H:i" }} </p>
+    </div>
+    {% empty %}
+    <p>No hay comentarios aún.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+    <h5 class="mt-4">Agregar comentario</h5>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-dark">Publicar</button>
+    </form>
+    {% else %}
+    <p class="text-muted">Inicia sesión para comentar.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

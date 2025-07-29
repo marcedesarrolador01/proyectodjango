@@ -1,5 +1,38 @@
-{% extends 'base.html' %}
-{% block title %}login{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login | AutoBlog {% endblock %}
+{% load widget_tweaks %}
+
+
 {% block content %}
-<p>Hola, soy login</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="mb-4 text-center">Iniciar Sesión</h2>
+
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          Por favor, revisá tu usuario y contraseña.
+        </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+          <label for="id_username">Usuario</label>
+          {{ form.username|add_class:"form-control" }}
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="id_password">Contraseña</label>
+          {{ form.password|add_class:"form-control" }}
+        </div>
+
+        <button type="submit" class="btn btn-outline-dark w-100">
+          Iniciar sesión
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

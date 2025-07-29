@@ -1,10 +1,47 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block title %}Home | AutoBlog {% endblock %}
 {% block content %}
+
 <div class="container mt-5">
   <div class="text-center mb-5">
     <h1 class="display-4 fw-bold">Bienvenido a AutoBlog</h1>
+    <br>
+    <br>
+    <div class="row">
+      {% for post in posts %}
+      <div class="col-md-4 mb-4 d-flex">
+        <div class="card h-100 border-dark w-100">
+          {% if post.imagen %}
+          <img src="{{ post.imagen.url }}" class="card-img-top home-card" alt="{{ post.titulo }}">
+          {% else %}
+          <img src="{% static 'img/placeholder.png' %}" class="card-img-top home-card" alt="Sin imagen">
+          {% endif %}
+          <div class="card-body home-card">
+            <h5 class="card-title home-card">{{ post.titulo }}</h5>
+            <p class="card-text home-card">{{ post.contenido|truncatechars:100 }}</p>
+          </div>
+          <div class="card-footer text-muted home-card">
+            <small>
+              Por {{ post.autor.username }} |
+              {{ post.fecha_creacion|date:"d/m/Y" }} <br>
+              {{ post.total_comentarios }} comentarios |
+              {{ post.total_likes }} likes
+            </small>
+            <a href="{% url 'detalle_post' post.slug %}" class="btn btn-sm btn-outline-dark float-end mt-2">Leer más</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p>No se encontraron publicaciones.</p>
+      {% endfor %}
+    </div>
+
     <p class="lead">El espacio donde los amantes de los autos encuentran noticias, novedades y las mejores imágenes.</p>
+    <div class="text-center mt-4">
+  <a href="{% url 'noticias' %}" class="btn btn-dark btn-lg">Ver más noticias</a>
+</div>
+
     <a href="{% url 'registro' %}" class="btn btn-outline-dark mt-3">Registrate ahora</a>
   </div>
 
@@ -13,9 +50,9 @@
     <div class="col-md-4 mb-4">
       <div class="card border-dark h-100 hover-card">
         <div class="card-body">
-          <h5 class="card-title">Últimas Noticias</h5>
+          <h5 class="card-title">Sobre Nosotros</h5>
           <p class="card-text">Mantente informado con lo último del mundo automotor.</p>
-          <a href="{% url 'noticias' %}" class="btn btn-outline-dark">Ver noticias</a>
+          <a href="{% url 'nosotros' %}" class="btn btn-outline-dark">Ver nosotros</a>
         </div>
       </div>
     </div>
@@ -39,6 +76,4 @@
     </div>
   </div>
 </div>
-
-
 {% endblock %}

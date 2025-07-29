@@ -1,5 +1,58 @@
-{% extends 'base.html' %}
-{% block title %}contacto{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contacto | AutoBlog {% endblock %}
+
 {% block content %}
-<p>Hola, soy contacto</p>
+
+
+<!-- Encabezado -->
+<section class="hero-contacto">
+  <div class="container">
+    <h1>¿Querés hablar de autos? Nosotros también.</h1>
+    <h5>Contactanos por redes sociales o dejá tu mensaje. ¡Nos encanta escuchar nuevas ideas y experiencias del mundo motor!.</h5>
+  </div>
+</section>
+
+<!-- Redes Sociales -->
+<section class="container text-center py-4">
+  <div class="d-flex justify-content-center gap-5 flex-wrap">
+    <div>
+      <a href="https://www.facebook.com/profile.php?id=61578346573667" class="social-icon border-success" target="_blank" title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <p class="social-label">WhatsApp</p>
+    </div>
+    <div>
+      <a href="https://www.instagram.com/autoblog_info/profilecard/?igsh=MWF1YnRtMm5nZzNkZw==" class="social-icon border-danger" target="_blank" title="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <p class="social-label">Instagram</p>
+    </div>
+    <div>
+      <a href="https://www.facebook.com/profile.php?id=61577353053241" class="social-icon border-primary" target="_blank" title="Facebook">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <p class="social-label">Facebook</p>
+    </div>
+  </div>
+</section>
+
+<!-- Formulario -->
+<section class="container my-5">
+  <h2 class="text-center mb-4">Formulario de Contacto</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" class="contact-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-custom mt-3">Enviar</button>
+  </form>
+</section>
 {% endblock %}

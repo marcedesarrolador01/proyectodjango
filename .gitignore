@@ -1,0 +1,45 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+entorno/
+
+# Django stuff
+db.sqlite3
+media/
+staticfiles/
+*.log
+local_settings.py
+
+# Environment variables
+.env
+.env.*
+
+# Editor folders
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Distribution / packaging
+*.egg-info/
+*.eggs/
+build/
+dist/
+
+# Test / coverage reports
+htmlcov/
+.tox/
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+
+# Other
+*.bak
+*.swp
